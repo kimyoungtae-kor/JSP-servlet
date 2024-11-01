@@ -17,12 +17,27 @@
 	h2{
 		font-size: 38px;
 	}
+	.aa{
+		background-color : black;
+		color : white;
+	}
 </style>
 </head>
 <body>
-	
+	<% int num = 10; %>
 	<h1 id="c">Hello world!</h1>
 	<h2><%=LocalDateTime.now() %></h2>
-	
+	<div class="aa">
+	<% for(int i = 2 ; i <= 9 ;i++){
+		for(int j = 1 ; j <10 ; j++){
+			out.println(String.format("<p>%d * %d = %d</p>",i,j,i*j));
+		}
+	}
+		%>
+	</div>
+	<script>
+		const num = `<%=num%>`; 
+		alert(num);
+	</script>
 </body>
 </html>

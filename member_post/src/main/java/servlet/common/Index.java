@@ -7,7 +7,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-@WebServlet({"/","/index"})
+@WebServlet({"/index"})
 public class Index extends HttpServlet{
 
 	@Override

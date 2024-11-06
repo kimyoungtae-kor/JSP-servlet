@@ -7,7 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<p>로그아웃되었습니다</p>
-	<a href="login">로그인하러가기</a>
+	<h1>for2.jsp</h1>
+	<%
+		String num = request.getParameter("num");
+		out.print(num);
+	%>
 </body>
 </html>

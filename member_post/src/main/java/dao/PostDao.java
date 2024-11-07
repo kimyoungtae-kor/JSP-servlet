@@ -70,7 +70,7 @@ public class PostDao {
    }
    public List<Post> selectList() {
 	   List<Post> posts = new ArrayList<>();
-		String sql = "SELECT pno,title,writer,view_count,regdate FROM tbl_post";
+		String sql = "SELECT pno,title,writer,view_count,regdate FROM tbl_post Order by pno DESC";
 		
 		try(Connection conn = DBconn.getConnection();PreparedStatement pstmt = conn.prepareStatement(sql)) {
 			ResultSet rs = pstmt.executeQuery();
@@ -144,31 +144,37 @@ public class PostDao {
 
        return 0;
    }
+//   private static PostDao dao = new PostDao();
+//
+//	public static PostDao getInstance() {
+//		
+//		return dao;
+//	}
     public static void main(String[] args) {
         PostDao dao = new PostDao();
-        //반복생성
+//        반복생성
 //        for(int i = 0;i <10; i++) {
 //        	dao.insert(Post.builder().writer("dydxo4423").title("제목 + " + (i + 1)).content("내용").build());
 //        }
-//        
-      //리스트 호출
+////        
+////      리스트 호출
 //        dao.selectList().forEach(System.out::println); 
-        //단일 조회
+////        단일 조회
 //        System.out.println(dao.selectOne(4L));
-        //삭제
+////        삭제
 //        System.out.println(dao.delete(4L));
-        //수정
-        Post post = dao.selectOne(6L);
-        System.out.println(post);
-        post = Post.builder().pno(post.getPno()).title("수정된 제목").content("수정된 내용").build();
-        
-        dao.update(post);
-        
-        System.out.println(post);
-        Post result2 = dao.selectOne(6L);
-        result2 = Post.builder().title("헤헷").content("헤헤헿").pno(post.getPno()).build();
-        
-       int resultupdate2 = dao.update(result2);
-       System.out.println(resultupdate2);
+////        수정
+//        Post post = dao.selectOne(6L);
+//        System.out.println(post);
+//        post = Post.builder().pno(post.getPno()).title("수정된 제목").content("수정된 내용").build();
+//        
+//        dao.update(post);
+//        
+//        System.out.println(post);
+//        Post result2 = dao.selectOne(6L);
+//        result2 = Post.builder().title("헤헷").content("헤헤헿").pno(post.getPno()).build();
+//        
+//       int resultupdate2 = dao.update(result2);
+//       System.out.println(resultupdate2);
     }
 }

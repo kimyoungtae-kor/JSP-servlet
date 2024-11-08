@@ -24,11 +24,19 @@ public class PostServiceImpl implements PostService{
 
 		return postDao.delete(pno);
 	}
-
+	
 	@Override
 	public Post findBy(Long pno) {
 
 		return postDao.selectOne(pno);
+	}
+	
+	
+	
+	@Override
+	public Post view(Long pno) {
+		postDao.increaseviewCount(pno);
+		return findBy(pno);
 	}
 
 	@Override

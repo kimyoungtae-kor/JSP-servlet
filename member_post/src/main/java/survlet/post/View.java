@@ -21,7 +21,7 @@ public class View extends HttpServlet{
 		
 		
 		
-		req.setAttribute("post", service.findBy(bno));
+		req.setAttribute("post", service.view(bno));
 		
 		req.getRequestDispatcher("/WEB-INF/jsp/post/view.jsp").forward(req, resp);
 	}

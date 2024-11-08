@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import utils.DBconn;
 import vo.Member;
@@ -121,6 +122,33 @@ public class PostDao {
 
        return 0;
    }
+   public int increaseviewCount(Long pno) {
+	   Connection conn = null;
+       PreparedStatement pstmt = null;
+       try {
+    	   String sql = "update tbl_post set view_count = view_count + 1 where pno = ?";
+          conn = DBconn.getConnection();
+
+           pstmt = conn.prepareStatement(sql);
+
+           int idx = 1;
+           pstmt.setLong(idx++, pno);
+     
+           // 3. 문장 실행
+//           return stmt.executeUpdate(sql);
+           return pstmt.executeUpdate(); 
+
+       } catch (SQLException | ClassNotFoundException e) {
+           e.printStackTrace();
+       } finally {
+           try {
+               pstmt.close();
+               conn.close();
+           } catch (SQLException ignore) {}
+       }
+
+       return 0;
+   }
    public int delete(Long pno) {
 	   Connection conn = null;
        PreparedStatement pstmt = null;
@@ -176,5 +204,7 @@ public class PostDao {
 //        
 //       int resultupdate2 = dao.update(result2);
 //       System.out.println(resultupdate2);
+        
+        
     }
 }

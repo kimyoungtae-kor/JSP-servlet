@@ -12,11 +12,14 @@
     <div class="wrap">
        <jsp:include page="../common/header.jsp"></jsp:include>
         <main class="container">
-  <h2 class="my-4">Hover Rows Hello World</h2>
-     
+       			 <div class = "clearfix py-4">
+  				<h2 class="float-start" >Hover Rows Hello World</h2>
+     			<a href="write" class="btn btn-primary float-end">글쓰기</a>
+				</div>
+                
+                
                 <table class="table table-hover text-center" style="table-layout: fixed;">
-
-                <thead>
+				    <thead>
                     <tr>
                     <th style="width: 6%;">글번호</th>
                     <th>제목</th>
@@ -24,7 +27,7 @@
                     <th style="width: 15%;">작성일</th>
                     <th style="width: 6%;">조회수</th>
                     </tr>
-                </thead>
+                	</thead>
 
                 <tbody>
                 <c:forEach items="${posts}" var="p">

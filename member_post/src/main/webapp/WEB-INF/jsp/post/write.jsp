@@ -24,42 +24,36 @@
 </head>
 <body>
     <div class="wrap">
-       <jsp:include page="../common/header.jsp"></jsp:include>
-
+		<jsp:include page="../common/header.jsp"></jsp:include>
+		
         <main class="container">
-          <div class="container clearfix p-2">
+                  <div class="container clearfix p-2">
                
-                <h2 class="text-center fw-bold p-3">View</h2>
+                <h2 class="text-center fw-bold p-3">write</h2>
             </div>
+                        	<form method="post">
             <div class="my-3 col-md-9 mx-auto">
-                <label for="title" class="form-label mt-3"><i class="fa-solid fa-heading text-danger"></i><b> 제목</b></label>
-                <input type="text" class="form-control" id="title" placeholder="title" name="title" value="${post.title}" disabled>
 
-                <label for="content" class="form-label  mt-3"><i class="fa-solid fa-pen text-danger"></i></i><b> Content</b></label>
-                <textarea class="form-control" rows="20" id="content" name="content" disabled>${post.content}</textarea>
+                <label for="title" class="form-label mt-3"><i class="fa-solid fa-heading text-danger"></i><b> 제목</b></label>
+                <input type="text" class="form-control" id="title" placeholder="title" name="title" >
+
+                <label for="content" class="form-label  mt-3"><i class="fa-solid fa-pen text-danger"></i><b> Content</b></label>
+                <textarea class="form-control" rows="20" id="content" name="content" placeholder="content" ></textarea>
 
                 <label for="writer" class="form-label mt-3"><i class="fa-solid fa-user-pen text-danger"></i><b> 작성자</b></label>
-                <input type="text" class="form-control" id="writer" placeholder="writer" name="writer" value="${post.writer}" disabled>
+                <input type="text" class="form-control" id="writer" placeholder="writer" name="writer"  value="${member.id}" readonly>
 
-                <label for="regdate" class="form-label mt-3"><i class="fa-solid fa-clock text-danger"></i><b> 작성일</b></label>
-                <input type="text" class="form-control" id="regdate" placeholder="regdate" name="regdate" value="${post.regdate}" disabled>
-
-                <label for="updatedate" class="form-label mt-3"><i class="fa-regular fa-clock text-danger"></i><b> 수정일</b></label>
-                <input type="text" class="form-control" id="updatedate" placeholder="updatedate" name="updatedate" value="${post.updatedate}" disabled>
               </div>
+              
               <hr>
+          
               <div class ="text-center my-5">
-              	<c:if test="${post.writer == member.id}">
-                <a href="modify?pno=${post.pno}" class="btn btn-warning">수정</a>
-                <a href="remove?pno=${post.pno}" class="btn btn-danger" onclick="return confirm('정말 삭제 하시겠습니까?')">삭제</a>                              
-                </c:if>
-                <a href="list" class="btn btn-primary">목록</a>
+              	<button class="btn btn-primary">작성</button>
+                <a href="list" class="btn ">목록</a>
               </div>
+              </form>
         </main>
-        <footer class="bg-warning text-center p-4 my-5">
-            <address>서울특별시 구로구 디지털로 306 대룡포스트 2차 2층 더조은 아카데미 204호</address>
-            <p>All rights reserved &copy; copyright.</p>
-        </footer>
+       <jsp:include page="../common/footer.jsp"></jsp:include>
     </div>
 </body>
 </html>

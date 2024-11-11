@@ -10,6 +10,12 @@ public class PageDto {
     private int endPage; // 페이지 버튼 종료 번호
 
     private int pageCount; //페이지 버튼갯수;
+    
+    //이전 이후 계산용 필드
+    private boolean prev;
+    private boolean next;
+    private boolean doubleprev;
+    private boolean doublenext;
 
     public PageDto(int total) {
         this(new Criteria(), total);
@@ -27,15 +33,22 @@ public class PageDto {
         startPage = endPage - pageCount + 1;
 
         int realEnd = (total + cri.getAmount() - 1) / cri.getAmount();
-        System.out.println(realEnd);
 
         if(realEnd < endPage) {
             endPage = realEnd;
         }
+        
+        
+        prev = cri.getPage() > 1;
+        next = cri.getPage() < realEnd;
+        doubleprev =startPage > 1;
+        doublenext = endPage < realEnd;
+//        doublenext = endPage
     }
 
     public static void main(String[] args) {
-        PageDto dto = new PageDto(new Criteria(8, 10), 255, 10);
+        PageDto dto = new PageDto(255);
         System.out.println(dto);
+        
     }
 }

@@ -50,10 +50,10 @@
               <hr>
               <div class ="text-center my-5">
               	<c:if test="${post.writer == member.id}">
-                <a href="modify?pno=${post.pno}" class="btn btn-warning">수정</a>
-                <a href="remove?pno=${post.pno}" class="btn btn-danger" onclick="return confirm('정말 삭제 하시겠습니까?')">삭제</a>                              
+                <a href="modify?pno=${post.pno}&${cri.qs2}" class="btn btn-warning">수정</a>
+                <a href="remove?pno=${post.pno}&${cri.qs2}" class="btn btn-danger" onclick="return confirm('정말 삭제 하시겠습니까?')">삭제</a>                              
                 </c:if>
-                <a href="list" class="btn btn-primary">목록</a>
+                <a href="list?${cri.qs2}" class="btn btn-primary">목록</a>
               </div>
         </main>
         <footer class="bg-warning text-center p-4 my-5">

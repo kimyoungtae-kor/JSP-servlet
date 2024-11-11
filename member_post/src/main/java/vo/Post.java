@@ -16,5 +16,6 @@ public class Post {
 	private final Long viewCount;
 	private final Date regdate;
 	private final Date updatedate;
+	private final int cno;
 	
 }

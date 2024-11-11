@@ -31,7 +31,7 @@
                
                 <h2 class="text-center fw-bold p-3">수정</h2>
             </div>
-            <form method="post">
+            <form method="post" action="modify?${cri.qs2}">
             <div class="my-3 col-md-9 mx-auto">
 
                 <label for="title" class="form-label mt-3"><i class="fa-solid fa-heading text-danger"></i><b> 제목</b></label>
@@ -49,7 +49,7 @@
           
               <div class ="text-center my-5">
               	<button class="btn btn-primary">작성</button>
-                <a href="list" class="btn ">목록</a>
+                <a href="list?${cri.qs2}" class="btn ">목록</a>
               </div>
               <input type="hidden" name="pno" value="${post.pno}">
               </form>

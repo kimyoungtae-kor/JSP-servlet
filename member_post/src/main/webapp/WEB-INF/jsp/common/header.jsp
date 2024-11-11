@@ -10,7 +10,7 @@
             <ul class="navbar-nav justify-content-start container  ">
                 <li class="nav-item mx-5"><a class="nav-link text-white" href="${cp}index">메인페이지</a></li>
                 <li class="nav-item mx-5"><a class="nav-link text-white" href="${cp}mypage">마이페이지</a></li>
-                <li class="nav-item mx-5"><a class="nav-link text-white" href="${cp}post/list">공지사항</a></li>
+                <li class="nav-item mx-5"><a class="nav-link text-white" href="${cp}post/list?category=1">공지사항</a></li>
                 <li class="nav-item dropdown mx-5">
                     <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">게시판</a>
                     <ul class="dropdown-menu">

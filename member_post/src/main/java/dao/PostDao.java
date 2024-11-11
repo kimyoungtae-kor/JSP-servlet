@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import dto.Criteria;
 import utils.DBconn;
 import vo.Member;
 import vo.Post;
@@ -18,7 +19,7 @@ public class PostDao {
 	   Connection conn = null;
        PreparedStatement pstmt = null;
        try {
-           String sql = "insert into tbl_post (title, writer, content) values(?,?,?)";
+           String sql = "insert into tbl_post (title, writer, content,cno) values(?,?,?,?)";
           conn = DBconn.getConnection();
 
            pstmt = conn.prepareStatement(sql);
@@ -27,6 +28,7 @@ public class PostDao {
            pstmt.setString(idx++, post.getTitle());
            pstmt.setString(idx++, post.getWriter());
            pstmt.setString(idx++, post.getContent());
+           pstmt.setInt(idx++, post.getCno());
            // 3. 문장 실행
 //           return stmt.executeUpdate(sql);
            return pstmt.executeUpdate();
@@ -69,11 +71,18 @@ public class PostDao {
 		
 		return post;
    }
-   public List<Post> selectList() {
+   public List<Post> selectList(Criteria cri) {
 	   List<Post> posts = new ArrayList<>();
-		String sql = "SELECT pno,title,writer,view_count,regdate FROM tbl_post Order by pno DESC";
+		String sql = "SELECT pno,title,writer,view_count,regdate,cno\r\n"
+				+ "FROM tbl_post \r\n"
+				+ "Where cno = ? \r\n"
+				+ "Order by pno DESC\r\n"
+				+ "limit ? offset ?";
 		
 		try(Connection conn = DBconn.getConnection();PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, cri.getCategory());
+			pstmt.setInt(2, cri.getAmount());
+			pstmt.setInt(3, cri.getOffset());
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next()) {
 				int idx = 1;
@@ -83,6 +92,7 @@ public class PostDao {
 						.writer(rs.getString(idx++))
 						.viewCount(rs.getLong(idx++))
 						.regdate(rs.getDate(idx++))
+						.cno(rs.getInt(idx++))
 						.build();
 				posts.add(post);
 			}
@@ -94,6 +104,33 @@ public class PostDao {
 		
 		return posts;
    }
+   
+   
+   public int getCount(Criteria cri) {
+	   
+		String sql = "SELECT count(*) as cnt\r\n"
+				+ "FROM tbl_post \r\n"
+				+ "Where cno = ?";
+		
+		try(Connection conn = DBconn.getConnection();PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, cri.getCategory());
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next()) {
+				return rs.getInt(1);
+			}
+			rs.close();
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return 0;
+   }
+   
+   
+   
+   
+   
    public int update(Post post) {
 	   Connection conn = null;
        PreparedStatement pstmt = null;
@@ -181,7 +218,7 @@ public class PostDao {
     public static void main(String[] args) {
         PostDao dao = new PostDao();
 //        반복생성
-//        for(int i = 0;i <10; i++) {
+//        for(int i = 0;i <100; i++) {
 //        	dao.insert(Post.builder().writer("dydxo4423").title("제목 + " + (i + 1)).content("내용").build());
 //        }
 ////        
@@ -204,6 +241,12 @@ public class PostDao {
 //        
 //       int resultupdate2 = dao.update(result2);
 //       System.out.println(resultupdate2);
+        
+//        Criteria cri = new Criteria(2,10,2);
+//        dao.selectList(cri).forEach(System.out::println);
+//        System.out.println("=============갯수=============");
+//        System.out.println(dao.getCount(cri));
+        
         
         
     }

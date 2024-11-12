@@ -21,4 +21,5 @@ public interface PostService {
 	
 	int count(Criteria cri);
 	
+	
 }

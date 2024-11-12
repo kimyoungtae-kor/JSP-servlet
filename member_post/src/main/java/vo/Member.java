@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class Member {
 	private String id;
-	private String pw;
+	private String pwd;
 	private String name;
 	private String email;
 	private String roadAddr;
@@ -24,7 +24,7 @@ public class Member {
 	}
 	private Member( String id,String pwd,String name,String email,String roadAddr,String detailAddr,Date regdate) {
 		this.id = id;
-		this.pw = pwd;
+		this.pwd = pwd;
 		this.name = name;
 		this.email = email;
 		this.roadAddr = roadAddr;

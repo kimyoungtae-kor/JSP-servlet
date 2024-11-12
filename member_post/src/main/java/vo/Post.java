@@ -14,6 +14,7 @@ public class Post {
 	private final String writer;
 	private final String content;
 	private final Long viewCount;
+
 	private final Date regdate;
 	private final Date updatedate;
 	private final int cno;

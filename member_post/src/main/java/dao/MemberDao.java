@@ -26,7 +26,7 @@ public class MemberDao {
 
             int idx = 1;
             pstmt.setString(idx++, member.getId());
-            pstmt.setString(idx++, member.getPw());
+            pstmt.setString(idx++, member.getPwd());
             pstmt.setString(idx++, member.getName());
             pstmt.setString(idx++, member.getEmail());
             pstmt.setString(idx++, member.getRoadAddr());

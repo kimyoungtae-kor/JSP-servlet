@@ -7,6 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
+
 	<form method="post" enctype="multipart/form-data" action="${cp}upload">
 		<input type="file" name="files" multiple>
 		<button>파일 전송</button>

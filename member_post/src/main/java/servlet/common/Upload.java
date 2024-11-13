@@ -17,49 +17,53 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import vo.Attach;
 
 @WebServlet("/upload")
 public class Upload extends HttpServlet {
-    @Override
+	@Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         DiskFileItemFactory factory = new DiskFileItemFactory();
         factory.setSizeThreshold(1024 * 1024);
         factory.setRepository(new File("c:/upload/tmp"));
 
         ServletFileUpload upload = new ServletFileUpload(factory);
-        
-        List<Attach> attachs = new ArrayList<Attach>();
+        List<Attach> attachs = new ArrayList<>();
         try {
             List<FileItem> items = upload.parseRequest(req);
             for(FileItem item : items) {
-            	  System.out.println(item.getName());
-                  System.out.println(item.getSize());
-                  
-                  String origin = item.getName();
-                  int dotidx = origin.lastIndexOf(".");
-                  String ext = "";
-                  if(dotidx != - 1) {
-                	  ext = origin.substring(dotidx);
-                  }
-                  String uuid = UUID.randomUUID().toString();
-                  String realName = uuid + ext;
-                  String path = getTodayStr();
-                  File parentPath = new File("c:/upload",path);
-                  if(!parentPath.exists()) {
-                	  parentPath.mkdirs();
-                  }
-                  item.write(new File(parentPath,realName));
-                  attachs.add(Attach.builder().uuid(realName).path(path).origin(origin).build());
+                System.out.println(item.getName());
+                System.out.println(item.getSize());
+                
+                String origin = item.getName();
+                int dotIdx = origin.lastIndexOf(".");
+                String ext = "";
+                if(dotIdx != -1) {
+                ext = origin.substring(dotIdx);
+                }
+                String uuid = UUID.randomUUID().toString();
+                String realName = uuid + ext;
+                String path = getTodayStr();
+                File parentPath= new File("c:/upload", path);
+                if(!parentPath.exists()) {
+                parentPath.mkdirs();
+                }
+                item.write(new File(parentPath , realName));
+                attachs.add(Attach.builder().uuid(realName).path(path).origin(origin).build());
             }
             System.out.println(attachs);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            
+            resp.setContentType("application/json; charset=utf-8");
+            resp.getWriter().print(new ObjectMapper().writeValueAsString(attachs));
+		} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+		        }
+		    }
     
     public String getTodayStr() {
-    	return new SimpleDateFormat("yyyy/MM/dd").format(System.currentTimeMillis());
+    return new SimpleDateFormat("yyyy/MM/dd").format(System.currentTimeMillis());
     }
 }

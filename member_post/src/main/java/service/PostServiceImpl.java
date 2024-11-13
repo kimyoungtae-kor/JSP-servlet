@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 
 import dao.PostDao;
 import dto.Criteria;
+import mapper.AttachMapper;
 import mapper.MemberMapper;
 import mapper.PostMapper;
 import utils.MybatisInit;
@@ -13,11 +14,25 @@ import vo.Post;
 
 public class PostServiceImpl implements PostService{
 		private PostDao postDao = new PostDao();
+		public static void main(String[] args) {
+			new PostServiceImpl().write(Post.builder().title("제목").content("abcd").writer("dydxo4423").cno(2).build());
+		}
 	@Override
 	public int write(Post post) {
 		try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
-			return mapper.write(post);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+			System.out.println(post);// null
+			mapper.write(post);
+			
+			System.out.println(post);//not null
+			post.getAttachs().forEach(a -> {
+				a.setPno(post.getPno());
+				attachMapper.insert(a);
+			});
+			
+			
+			return 0;
 		}
 	}
 
@@ -35,6 +50,8 @@ public class PostServiceImpl implements PostService{
 
 		try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+			attachMapper.delete(pno);
 			return mapper.delete(pno);
 		}
 	}
@@ -44,20 +61,27 @@ public class PostServiceImpl implements PostService{
 
 		try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)){
 			PostMapper mapper = session.getMapper(PostMapper.class);
-			return mapper.selectOne(pno);
+			AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+			Post post = mapper.selectOne(pno);
+			post.setAttachs(attachMapper.selectList(pno));
+			
+			return post;
 		}
 	}
 	
 	
 	
 	@Override
-	public Post view(Long pno) {
-		try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)){
-			PostMapper mapper = session.getMapper(PostMapper.class);
-			mapper.increaseviewCount(pno);
-			return mapper.selectOne(pno);
-		}
-	}
+    public Post view(Long pno) {
+        try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)) {
+            PostMapper mapper = session.getMapper(PostMapper.class);
+            AttachMapper attachMapper = session.getMapper(AttachMapper.class);
+            mapper.increaseviewCount(pno);
+            Post post = mapper.selectOne(pno);
+            post.setAttachs(attachMapper.selectList(pno));
+            return post;
+        }
+    }
 
 	@Override
 	public List<Post> list(Criteria cri) {

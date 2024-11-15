@@ -18,9 +18,12 @@
    <script src="https://cdn.jsdelivr.net/npm/bxslider@4.2.17/dist/jquery.bxslider.min.js"></script>
    <!-- font-awesome -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <style>
     
     </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
     <div class="wrap">
@@ -59,9 +62,14 @@
  			  <li class="list-group-item"><a href="${cp}download?uuid=${a.uuid}&origin=${a.origin}&path=${a.path}">${a.origin}</a></li>
  			  </c:forEach>
 			</ul>
-			
-             
-              </div>
+            <div class="clearfix mt-5 mb-2">
+                <label class="form-label float-start"><i class="fa-regular fa-comment-dots"></i><b> 댓글</b><br></label>
+                <button type="button" class="btn btn-primary float-end btn-sm" id="btnReplyWrite">write reply</button>
+            </div>
+            <ul class="list-group small replies">
+                
+            </ul>
+			 </div>
                
               <hr>
               <div class ="text-center my-5">
@@ -71,7 +79,86 @@
                 </c:if>
                 <a href="list?${cri.qs2}" class="btn btn-primary">목록</a>
               </div>
+             <!-- The Modal -->
+            <div class="modal fade" id="replyModal">
+                <div class="modal-dialog">
+                <div class="modal-content">
+            
+                    <!-- Modal Header -->
+                    <div class="modal-header">
+                    <h4 class="modal-title">댓글</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+            
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <label for="replyContent" class="mb-2">content</label>
+                        <input type="text" class="form-control mb-3" id="replyContent">
+                    
+                        <label for="replyWriter" class="mb-2">writer</label>
+                        <input type="text" class="form-control mb-3" id="replyWriter" value="${member.id}">
+                    </div>
+            
+                    <!-- Modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnReplyWriteSumbit">작성</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                    </div>
+            
+                </div>
+                </div>
+            </div>
+  
+      </div>
         </main>
+		<script src="${cp}js/reply.js"></script>
+        <script>
+			moment.locale('ko');            
+            const pno = '${post.pno}';
+
+            // replyService.write({content : 'aaaa'})
+            replyService.list(pno,function(data){
+                let str="";
+                for(let i in data){
+                    str += makeLi(data[i]);
+                }
+                $(".replies").append(str);
+            });
+
+        function makeLi(reply){
+            return `<li class="list-group-item" data-rno="\${reply.rno}">
+
+                <p class="text-black fw-bold my-3 text-truncate">\${reply.content}</p>
+                <div class="clearfix text-secondary">
+                    <span class="float-start">\${reply.writer}</span>
+                    
+                    <span class="float-end small">\${moment(reply.regdate,'yyyy/MM/DD-HH:mm:ss').fromNow()}</span>
+                    <a type="button" class="float-end  small text-danger mx-2">삭제</a>
+                </div>
+            </li>`;
+        }
+        $("#btnReplyWrite").click(function(){
+                $("#replyModal").modal("show");
+        });
+        $(function(){
+
+            $("#btnReplyWriteSumbit").click(function(){
+                const writer = $("#replyWriter").val();
+                const content = $("#replyContent").val();
+                const reply = {pno,writer,content};
+                console.log("ffff");
+                replyService.write(reply,function(data){
+                    $("#replyModal").modal("hide");
+                    $("#replyWriter").val("");
+                    $("#replyContent").val("");
+                    console.log("dddd");
+                    location.reload();
+                });
+            });
+
+        });
+        </script>
+		
         <footer class="bg-warning text-center p-4 my-5">
             <address>서울특별시 구로구 디지털로 306 대룡포스트 2차 2층 더조은 아카데미 204호</address>
             <p>All rights reserved &copy; copyright.</p>

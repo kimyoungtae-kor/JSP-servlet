@@ -101,7 +101,11 @@
             
                     <!-- Modal footer -->
                     <div class="modal-footer">
+                        <div>
                         <button type="button" class="btn btn-primary" id="btnReplyWriteSumbit">작성</button>
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal" id="btnReplyModifySumbit">수정</button>
+                    <button type="button" class="btn btn-primary" id="btnReplyDeleteSumbit">삭제</button>
+                    </div>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
                     </div>
             
@@ -117,13 +121,19 @@
             const pno = '${post.pno}';
 
             // replyService.write({content : 'aaaa'})
-            replyService.list(pno,function(data){
+
+            function list() {
+                replyService.list(pno,function(data){
                 let str="";
                 for(let i in data){
                     str += makeLi(data[i]);
                 }
-                $(".replies").append(str);
+                // $(".replies").append(str);
+                $(".replies").html(str);
             });
+            }
+            list();
+           
 
         function makeLi(reply){
             return `<li class="list-group-item" data-rno="\${reply.rno}">
@@ -133,15 +143,77 @@
                     <span class="float-start">\${reply.writer}</span>
                     
                     <span class="float-end small">\${moment(reply.regdate,'yyyy/MM/DD-HH:mm:ss').fromNow()}</span>
-                    <a type="button" class="float-end  small text-danger mx-2">삭제</a>
+                    <a type="button" class="float-end  small text-danger mx-2 btn-reply-remove" id = "deletebtn" href="#">삭제</a>
                 </div>
             </li>`;
         }
+        //li 클릭시 이벤트
+        $(".replies").on("click", "li",function(){
+            console.log($(this).data("rno"));
+            const rno = $(this).data("rno");
+            $("#replyModal").modal("show");
+            replyService.view(rno, function(data){
+                console.log(data);
+                $("#replyModal").find(".modal-footer div button").hide().filter(":gt(0)").show();
+                $("#replyModal").data("rno",rno).modal("show");
+                $("#replyContent").val(data.content);
+                $("#replyWriter").val(data.writer);
+               
+
+
+
+            })
+        });
+
+        // 삭제 버튼 클릭시 이벤트
+        // $(".replies").on("click",$("#deletebtn"),function(){
+        //     event.preventDefault();
+        //     if(!confirm("삭제 하겠습니까?")){
+        //         return;
+        //     }
+        //     const rno = $(this).closest("li").data("rno");
+        //     replyService.remove(rno,function(data){
+        //         alert("삭제 되었습니다");
+        //         list();
+        //     });
+        // });
+
+        $(".replies").on("click", "li .btn-reply-remove",function(){
+            
+            if(!confirm("삭제 하겠습니까?")){
+                return false;
+            }
+            const rno = $(this).closest("li").data("rno");
+            replyService.remove(rno,function(data){
+                alert("삭제 되었습니다");
+                list();
+            });
+            return false;
+        });
+
+        //댓글쓰기 버튼 클릭시
         $("#btnReplyWrite").click(function(){
+
+                $("#replyModal").find(".modal-footer div button").hide().filter(":eq(0)").show();
                 $("#replyModal").modal("show");
+                $("#replyContent").val("");
+                $("#replyWriter").val("${member.id}");
+
         });
         $(function(){
+			//댓글수정
+            $("#btnReplyModifySumbit").click(function(){
 
+                const rno = $("#replyModal").data("rno");
+                const content = $("#replyContent").val();
+                const reply = {rno,content};
+                console.log(rno);
+                replyService.modify(reply,function(data){
+                    $("#replyModal").modal("hide");
+                    list();
+                    // location.reload();
+                });
+            });
             $("#btnReplyWriteSumbit").click(function(){
                 const writer = $("#replyWriter").val();
                 const content = $("#replyContent").val();
@@ -149,13 +221,21 @@
                 console.log("ffff");
                 replyService.write(reply,function(data){
                     $("#replyModal").modal("hide");
-                    $("#replyWriter").val("");
-                    $("#replyContent").val("");
-                    console.log("dddd");
-                    location.reload();
+                    list();
+                    // location.reload();
                 });
             });
-
+          //댓글삭제
+            $("#btnReplyDeleteSumbit").click(function(){
+                const rno = $("#replyModal").data("rno");
+                const reply = rno;
+                console.log(rno);
+                replyService.remove(reply,function(data){
+                    $("#replyModal").modal("hide");
+                    list();
+                    // location.reload();
+                });
+            });
         });
         </script>
 		

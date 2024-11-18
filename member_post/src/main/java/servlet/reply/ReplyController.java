@@ -50,14 +50,14 @@ public class ReplyController extends HttpServlet{
 	
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		char[] chs =new char[req.getContentLength()];
-		System.out.println(chs);
-		req.getReader().read(chs);
-		String str = new String(chs);
+//		char[] chs =new char[req.getContentLength()];
+//		System.out.println(chs);
+//		req.getReader().read(chs);
+//		String str = new String(chs);
 //		System.out.println(str);
 		
 
-		Reply reply =  gson.fromJson(str, Reply.class);
+		Reply reply =  gson.fromJson(req.getReader(), Reply.class);
 		System.out.println(reply);
 //		JsonNode node = mapper.readTree(str);
 //        System.out.println(node);

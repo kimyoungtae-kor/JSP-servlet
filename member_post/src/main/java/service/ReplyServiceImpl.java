@@ -53,7 +53,7 @@ public class ReplyServiceImpl implements ReplyService{
 	public Reply findBy(Long rno) {
 		try(SqlSession session = MybatisInit.getInstance().sqlSessionFactory().openSession(true)){
 			ReplyMapper mapper = session.getMapper(ReplyMapper.class);
-			return mapper.salectOne(rno);
+			return mapper.selectOne(rno);
 		}
 	}
 

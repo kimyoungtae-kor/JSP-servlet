@@ -15,6 +15,6 @@ public interface ReplyMapper {
 	int deleteAll(Long pno);
 	
 	
-	Reply salectOne(Long rno);
+	Reply selectOne(Long rno);
 	List<Reply> selectList(Long pno);
 }

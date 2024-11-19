@@ -62,6 +62,25 @@
  			  <li class="list-group-item"><a href="${cp}download?uuid=${a.uuid}&origin=${a.origin}&path=${a.path}">${a.origin}</a></li>
  			  </c:forEach>
 			</ul>
+
+
+
+              <!-- 내 댓글 구간 -->
+              <div class="clearfix mt-5 mb-2">
+                <label class="form-label float-start"><i class="fa-regular fa-comment-dots text-danger"></i> <b>My Reply</b><br></label>
+            </div>
+            <ul class="list-group small my-replies my-2" data-bs-theme="dark">
+                <li class="list-group-item" data-rno="38">
+                    <p class="fw-bold mt-3 text-truncate">haha</p>
+                    <div class="clearfix">
+                        <span class="float-start">aaaa</span>
+                        <span class="float-end small">하루 전</span>
+                        <a class="float-end small text-danger mx-2 btn-reply-remove" href="#">삭제</a>
+                    </div>
+                </li>
+            </ul>
+
+
             <div class="clearfix mt-5 mb-2">
                 <label class="form-label float-start"><i class="fa-regular fa-comment-dots"></i><b> 댓글</b><br></label>
                 <button type="button" class="btn btn-primary float-end btn-sm" id="btnReplyWrite">write reply</button>
@@ -69,8 +88,11 @@
             <ul class="list-group small replies">
                 
             </ul>
+            <div class ="d-grid my-3">
+                <button class="btn btn-primary btn-bolck btn-more-reply">댓글 더보기</button>
+            </div>
 			 </div>
-               
+
               <hr>
               <div class ="text-center my-5">
               	<c:if test="${post.writer == member.id}">
@@ -106,7 +128,7 @@
                     <button type="button" class="btn btn-warning" data-bs-dismiss="modal" id="btnReplyModifySumbit">수정</button>
                     <button type="button" class="btn btn-primary" id="btnReplyDeleteSumbit">삭제</button>
                     </div>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-danger btn-secondary" data-bs-dismiss="modal">닫기</button>
                     </div>
             
                 </div>
@@ -122,15 +144,33 @@
 
             // replyService.write({content : 'aaaa'})
 
-            function list() {
-                replyService.list(pno,function(data){
-                let str="";
-                for(let i in data){
-                    str += makeLi(data[i]);
-                }
-                // $(".replies").append(str);
-                $(".replies").html(str);
-            });
+            function list(cri,myOnly) {
+                replyService.list(pno, cri, function(data) {
+                    if(!data.list.length) {
+                        $(".btn-more-reply")
+                        .prop("disabled", true)
+                        .text("댓글이 없습니다.")
+                        .removeClass("btn-primary")
+                        .addClass("btn-secondary");
+                        return;
+                    }
+                    let str = "";
+                    let myStr = "";
+                    for(let i in data.list) {
+                        str += makeLi(data.list[i])
+                    }
+                    for(let i in data.myList) {
+                        myStr += makeLi(data.myList[i])
+                    }
+
+                    if(myOnly != null){
+                        return false;
+                    }
+                    $(".replies").append(str);
+                    $(".my-replies").html(myStr);
+                    // 추가 css 작업
+                    $(".my-replies .text-secondary, .my-replies .text-black").removeClass("text-secondary text-black")
+                });
             }
             list();
            
@@ -148,7 +188,7 @@
             </li>`;
         }
         //li 클릭시 이벤트
-        $(".replies").on("click", "li",function(){
+        $(".replies, .my-replies").on("click", "li",function(){
             console.log($(this).data("rno"));
             const rno = $(this).data("rno");
             $("#replyModal").modal("show");
@@ -178,18 +218,29 @@
         //     });
         // });
 
-        $(".replies").on("click", "li .btn-reply-remove",function(){
+        $(".replies, .my-replies").on("click", "li .btn-reply-remove",function(){
             
             if(!confirm("삭제 하겠습니까?")){
                 return false;
             }
-            const rno = $(this).closest("li").data("rno");
+            const $li = $(this).closest("li");
+            const rno = $li.data("rno");
             replyService.remove(rno,function(data){
                 alert("삭제 되었습니다");
-                list();
+
+                $li.remove();
+
+                list(undefined, true);
+                
             });
             return false;
         });
+
+        // 댓글 더보기 버튼 클릭시
+        $(".btn-more-reply").click(function() {
+                const lastRno = $(".replies li:last").data("rno");
+                list({lastRno});
+            });
 
         //댓글쓰기 버튼 클릭시
         $("#btnReplyWrite").click(function(){
@@ -198,7 +249,7 @@
                 $("#replyModal").modal("show");
                 $("#replyContent").val("");
                 $("#replyWriter").val("${member.id}");
-
+                list(undefined, true);
         });
         $(function(){
 			//댓글수정
@@ -210,7 +261,8 @@
                 console.log(rno);
                 replyService.modify(reply,function(data){
                     $("#replyModal").modal("hide");
-                    list();
+                    const $li = $(`.replies li[data-rno='\${rno}'] p`).text(content);
+                    list(undefined,true);
                     // location.reload();
                 });
             });
@@ -222,6 +274,7 @@
                 replyService.write(reply,function(data){
                     $("#replyModal").modal("hide");
                     list();
+                    list(undefined,true);
                     // location.reload();
                 });
             });
@@ -230,9 +283,10 @@
                 const rno = $("#replyModal").data("rno");
                 const reply = rno;
                 console.log(rno);
+                const $li = $(`.replies li[data-rno='\${rno}']`);
                 replyService.remove(reply,function(data){
                     $("#replyModal").modal("hide");
-                    list();
+                    $li.remove();
                     // location.reload();
                 });
             });

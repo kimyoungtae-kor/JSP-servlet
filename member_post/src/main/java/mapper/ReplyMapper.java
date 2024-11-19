@@ -2,9 +2,11 @@ package mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import dto.Criteria;
+import dto.ReplyCri;
 import vo.Post;
 import vo.Reply;
 
@@ -16,5 +18,6 @@ public interface ReplyMapper {
 	
 	
 	Reply selectOne(Long rno);
-	List<Reply> selectList(Long pno);
+	List<Reply> selectList(@Param("pno") Long pno, @Param("cri") ReplyCri cri);
+	List<Reply> selectListByMe(Reply reply);
 }

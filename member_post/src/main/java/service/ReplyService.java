@@ -1,8 +1,10 @@
 package service;
 
 import java.util.List;
+import java.util.Map;
 
 import dto.Criteria;
+import dto.ReplyCri;
 import vo.Reply;
 
 public interface ReplyService {
@@ -12,5 +14,5 @@ public interface ReplyService {
 	int removeAll(Long pno);
 	Reply findBy(Long rno);
 	
-	List<Reply>  selectList(Long pno);
+	Map<String, List<Reply>> selectList(Long pno,ReplyCri cri,Object writer);
 }
